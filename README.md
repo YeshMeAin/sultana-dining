@@ -113,9 +113,14 @@ We use Prisma to model tables and run migrations.
 
 - Schema file: `api/prisma/schema.prisma`
 - Generate client: `pnpm prisma generate`
-- Migrate: `pnpm prisma migrate dev -n "init"`
+- Migrate: `pnpm prisma migrate dev -n "migration_name"`
 
-### Initial Models (Draft)
+### Data Model Architecture
+
+The system follows this flow: **Ingredients → Dishes → Menu Items → Menus → Events → Clients**
+
+#### Core Models
+
 ```prisma
 model User {
   id            String   @id @default(cuid())
@@ -125,42 +130,128 @@ model User {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
+  dishes        Dish[]
   menus         Menu[]
+  events        Event[]
+  clients       Client[]
 }
 
-model Menu {
-  id        String   @id @default(cuid())
-  userId    String
-  user      User     @relation(fields: [userId], references: [id])
-  title     String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model Ingredient {
+  id            String   @id @default(cuid())
+  name          String   @unique
+  unit          String   // e.g., "kg", "L", "units", "grams"
+  pricePerUnit  Float    // Current price per unit
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
-  items     MenuItem[]
+  dishIngredients DishIngredient[]
 }
 
 model Dish {
-  id          String   @id @default(cuid())
-  name        String
-  foodCost    Float
-  laborCost   Float
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id            String   @id @default(cuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id])
+  name          String
+  recipeText    String?  @db.Text  // Original recipe text
+  servings      Int      // How many people this dish serves
+  laborCost     Float    @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
-  menuItems   MenuItem[]
+  ingredients   DishIngredient[]
+  menuItemDishes MenuItemDish[]
+}
+
+model DishIngredient {
+  id            String   @id @default(cuid())
+  dishId        String
+  ingredientId  String
+  quantity      Float    // Quantity needed for the dish
+  dish          Dish     @relation(fields: [dishId], references: [id], onDelete: Cascade)
+  ingredient    Ingredient @relation(fields: [ingredientId], references: [id])
+  createdAt     DateTime @default(now())
+
+  @@unique([dishId, ingredientId])
+}
+
+model Menu {
+  id            String   @id @default(cuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id])
+  title         String
+  servingCount  Int      // General number of people this menu serves
+  notes         String?  @db.Text
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  items         MenuItem[]
+  events        Event[]
 }
 
 model MenuItem {
-  id        String   @id @default(cuid())
-  menuId    String
-  dishId    String
-  menu      Menu     @relation(fields: [menuId], references: [id])
-  dish      Dish     @relation(fields: [dishId], references: [id])
-  portions  Int      @default(1)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id              String   @id @default(cuid())
+  menuId          String
+  menu            Menu     @relation(fields: [menuId], references: [id], onDelete: Cascade)
+  name            String   // Display name for this menu item (e.g., "Main Course: Stew with Rice")
+  servingQuantity Int      @default(1)  // How many servings of this item
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  dishes          MenuItemDish[]
+}
+
+model MenuItemDish {
+  id          String   @id @default(cuid())
+  menuItemId  String
+  dishId      String
+  menuItem    MenuItem @relation(fields: [menuItemId], references: [id], onDelete: Cascade)
+  dish        Dish     @relation(fields: [dishId], references: [id])
+  createdAt   DateTime @default(now())
+
+  @@unique([menuItemId, dishId])
+}
+
+model Client {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  name        String
+  email       String?
+  phone       String?
+  notes       String?  @db.Text
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  events      Event[]
+}
+
+model Event {
+  id              String   @id @default(cuid())
+  userId          String
+  clientId        String?
+  menuId          String?
+  user            User     @relation(fields: [userId], references: [id])
+  client          Client?  @relation(fields: [clientId], references: [id])
+  menu            Menu?    @relation(fields: [menuId], references: [id])
+  title           String
+  eventDate       DateTime?
+  guestCount      Int?
+  additionalCosts Json?    // { "cleaning": 500, "bar": 1000, "equipment": 300, ... }
+  notes           String?  @db.Text
+  status          String   @default("draft")  // "draft", "proposal_sent", "confirmed", "completed"
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 }
 ```
+
+### Key Design Decisions
+
+1. **Ingredients are foundational**: Food costs are calculated dynamically by joining dish ingredients with current ingredient prices
+2. **Dishes have recipes**: Free-text recipes stored for LLM parsing, with structured ingredients in join table
+3. **Menu items can have multiple dishes**: A single menu item (e.g., "Main Course") can include multiple dishes (stew + rice)
+4. **Menus track serving count**: Overall people count at menu level, with per-item serving quantities
+5. **Events are the final proposal**: Tie together menu, client, and additional costs (cleaning, bar, etc.) stored as JSON
+6. **Flexible additional costs**: JSON column allows arbitrary cost categories without schema changes
 
 ---
 
@@ -171,31 +262,88 @@ model MenuItem {
   - iOS uses Google SDK to get ID token
   - API verifies ID token with Google, creates/updates user, issues JWTs
 
-### Endpoints (Draft)
+### API Endpoints
 
 #### Auth
-- `POST /auth/google`  
-  - Body: `{ idToken }`  
-  - 200 → `{ user, accessToken }` (+ refresh cookie)
+- `POST /auth/google` - Login with Google ID token
+- `POST /auth/refresh` - Refresh access token
+- `POST /auth/logout` - Logout and clear refresh token
 
 #### Users
-- `GET /me` → current user profile
+- `GET /users/me` - Get current user profile
+- `PATCH /users/me` - Update user profile
+
+#### Ingredients
+- `POST /ingredients` - Create ingredient
+- `GET /ingredients` - List all ingredients (paginated)
+- `GET /ingredients/:id` - Get single ingredient
+- `PATCH /ingredients/:id` - Update ingredient (name, unit, price)
+- `DELETE /ingredients/:id` - Delete ingredient
 
 #### Dishes
-- `POST /dishes` → create dish
-- `GET /dishes` → list dishes
-- `PATCH /dishes/:id` → update dish
-- `DELETE /dishes/:id` → remove dish
+- `POST /dishes` - Create dish from recipe text
+  - Body: `{ name, recipeText, servings, laborCost? }`
+  - Recipe text stored as-is for future LLM parsing
+  - Initially creates dish without ingredients
+- `POST /dishes/:id/parse-recipe` - Parse recipe with LLM (future)
+  - Extracts ingredients, matches or creates them
+  - Updates dish with ingredient associations
+- `POST /dishes/:id/ingredients` - Manually add ingredient to dish
+  - Body: `{ ingredientId, quantity }`
+- `GET /dishes` - List dishes with calculated food costs
+- `GET /dishes/:id` - Get dish with ingredients and total cost
+- `PATCH /dishes/:id` - Update dish details
+- `DELETE /dishes/:id` - Delete dish
+- `DELETE /dishes/:id/ingredients/:ingredientId` - Remove ingredient from dish
 
 #### Menus
-- `POST /menus` → create menu with items
-- `GET /menus` → list menus
-- `GET /menus/:id` → get details with calculated totals
-- `PATCH /menus/:id` → update menu/items
-- `DELETE /menus/:id` → remove menu
+- `POST /menus` - Create menu
+  - Body: `{ title, servingCount, notes?, items: [{ name, servingQuantity, dishIds: [] }] }`
+- `GET /menus` - List user's menus
+- `GET /menus/:id` - Get menu with items, dishes, and cost breakdown
+- `PATCH /menus/:id` - Update menu
+- `DELETE /menus/:id` - Delete menu
 
-#### Proposals
-- `POST /menus/:id/proposal` → generate PDF / share link
+#### Clients
+- `POST /clients` - Create client
+- `GET /clients` - List user's clients
+- `GET /clients/:id` - Get client details
+- `PATCH /clients/:id` - Update client
+- `DELETE /clients/:id` - Delete client
+
+#### Events
+- `POST /events` - Create event/proposal
+  - Body: `{ title, clientId?, menuId?, eventDate?, guestCount?, additionalCosts?, notes?, status? }`
+- `GET /events` - List user's events
+- `GET /events/:id` - Get event with full cost breakdown
+- `GET /events/:id/proposal` - Generate proposal calculation
+  - Returns: menu costs × guest count + additional costs
+- `PATCH /events/:id` - Update event
+- `DELETE /events/:id` - Delete event
+
+### User Flows
+
+#### 1. Creating a Dish
+1. User inputs free-text recipe and serving count
+2. API stores recipe text as-is in `Dish.recipeText`
+3. (Future) LLM parses recipe, matches/creates ingredients
+4. Ingredients linked via `DishIngredient` join table
+5. Food cost calculated dynamically: `SUM(ingredient.pricePerUnit × dishIngredient.quantity)`
+
+#### 2. Creating a Menu
+1. User creates menu with serving count and notes
+2. For each menu item (e.g., "Main Course"):
+   - Assign a display name
+   - Set serving quantity
+   - Link one or more dishes
+3. Cost calculated by aggregating all dish costs × quantities
+
+#### 3. Creating an Event
+1. User creates event and associates with client
+2. Links menu to event
+3. Sets guest count
+4. Adds additional costs (cleaning, bar, etc.) as JSON
+5. Final proposal: `(menu total ÷ menu.servingCount × event.guestCount) + additionalCosts`
 
 ---
 

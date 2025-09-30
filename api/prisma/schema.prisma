@@ -1,0 +1,163 @@
+// Prisma schema for Sultana Dining API
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String   @id @default(cuid())
+  email       String   @unique
+  displayName String?
+  googleId    String?  @unique
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  dishes  Dish[]
+  menus   Menu[]
+  events  Event[]
+  clients Client[]
+
+  @@index([email])
+  @@index([googleId])
+}
+
+// Ingredients are system-wide (not user-specific)
+model Ingredient {
+  id           String   @id @default(cuid())
+  name         String   @unique
+  unit         String   // e.g., "kg", "L", "units", "grams", "ml"
+  category     String?  // e.g., "produce", "meat", "dairy", "spices"
+  pricePerUnit Float    // Current price per unit
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  dishIngredients DishIngredient[]
+
+  @@index([name])
+  @@index([category])
+}
+
+model Dish {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name       String
+  recipeText String?  @db.Text // Original free-text recipe
+  servings   Int      // How many people this dish serves
+  laborCost  Float    @default(0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  ingredients    DishIngredient[]
+  menuItemDishes MenuItemDish[]
+
+  @@index([userId])
+  @@index([name])
+}
+
+model DishIngredient {
+  id           String     @id @default(cuid())
+  dishId       String
+  ingredientId String
+  quantity     Float      // Quantity needed for the dish's servings
+  dish         Dish       @relation(fields: [dishId], references: [id], onDelete: Cascade)
+  ingredient   Ingredient @relation(fields: [ingredientId], references: [id], onDelete: Restrict)
+  createdAt    DateTime   @default(now())
+
+  @@unique([dishId, ingredientId])
+  @@index([dishId])
+  @@index([ingredientId])
+}
+
+model Menu {
+  id           String   @id @default(cuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title        String
+  servingCount Int      // General number of people this menu serves
+  notes        String?  @db.Text
+  isTemplate   Boolean  @default(false) // For saving frequently used menus
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  items  MenuItem[]
+  events Event[]
+
+  @@index([userId])
+  @@index([isTemplate])
+}
+
+model MenuItem {
+  id              String   @id @default(cuid())
+  menuId          String
+  menu            Menu     @relation(fields: [menuId], references: [id], onDelete: Cascade)
+  name            String   // Display name (e.g., "Main Course: Stew with Rice")
+  servingQuantity Int      @default(1) // How many servings of this item
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  dishes MenuItemDish[]
+
+  @@index([menuId])
+}
+
+model MenuItemDish {
+  id          String   @id @default(cuid())
+  menuItemId  String
+  dishId      String
+  menuItem    MenuItem @relation(fields: [menuItemId], references: [id], onDelete: Cascade)
+  dish        Dish     @relation(fields: [dishId], references: [id], onDelete: Restrict)
+  ingredients Json?    // [{ ingredientId, quantity }] - copied from dish, then customizable per menu
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([menuItemId, dishId])
+  @@index([menuItemId])
+  @@index([dishId])
+}
+
+model Client {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name      String
+  email     String?
+  phone     String?
+  notes     String?  @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  events Event[]
+
+  @@index([userId])
+  @@index([name])
+}
+
+model Event {
+  id              String    @id @default(cuid())
+  userId          String
+  clientId        String?
+  menuId          String?
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  client          Client?   @relation(fields: [clientId], references: [id], onDelete: SetNull)
+  menu            Menu?     @relation(fields: [menuId], references: [id], onDelete: SetNull)
+  title           String
+  eventDate       DateTime?
+  guestCount      Int?
+  additionalCosts Json?     // { "cleaning": 500, "bar": 1000, "equipment": 300, ... }
+  notes           String?   @db.Text
+  status          String    @default("draft") // "draft", "proposal_sent", "confirmed", "completed"
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@index([userId])
+  @@index([clientId])
+  @@index([menuId])
+  @@index([status])
+  @@index([eventDate])
+}
