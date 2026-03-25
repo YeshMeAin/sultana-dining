@@ -7,10 +7,16 @@
     "build": "pnpm --filter db build && pnpm --filter web build",
     "db:push": "pnpm --filter db push",
     "db:studio": "pnpm --filter db studio",
-    "db:generate": "pnpm --filter db generate"
+    "db:generate": "pnpm --filter db generate",
+    "db:seed": "dotenv -e .env -- tsx packages/db/src/seed.ts",
+    "gen:secret": "node -e \"console.log(require('crypto').randomBytes(32).toString('base64'))\"",
+    "gen:admin-hash": "tsx scripts/gen-admin-hash.ts"
   },
   "devDependencies": {
+    "bcryptjs": "^2.4.3",
     "concurrently": "^8.2.2",
+    "dotenv-cli": "^7.4.2",
+    "tsx": "^4.11.0",
     "typescript": "^5.4.5"
   }
 }
