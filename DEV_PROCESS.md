@@ -34,7 +34,35 @@ Defined the full project scope and architecture for Sultana's Kitchen.
 
 ---
 
-## Entry 001 — (next entry goes here)
+## Entry 001 — Monorepo Skeleton
+**Date**: 2026-03-25
+**Type**: Config
+
+### Summary
+Scaffolded the full monorepo structure with pnpm workspaces, shared DB package with Drizzle ORM schema, Docker Compose for Postgres, and app stubs for web and agent. No app logic yet — this establishes the foundation everything else builds on.
+
+### Changes
+- `pnpm-workspace.yaml` — workspace definition
+- `package.json` — root scripts (`dev`, `build`, `db:push`, `db:studio`)
+- `tsconfig.base.json` — strict TS config shared across all packages
+- `.gitignore` — ignores node_modules, .env, .next, dist, drizzle/
+- `.env.example` — all required env vars documented with placeholders
+- `docker-compose.yml` — postgres service (always on) + web/agent (prod profile only)
+- `packages/db/package.json` — drizzle-orm, postgres driver, drizzle-kit
+- `packages/db/tsconfig.json`
+- `packages/db/drizzle.config.ts`
+- `packages/db/src/schema.ts` — full Drizzle schema: menu_categories, menu_items, recipes, clients, orders + all relations
+- `packages/db/src/client.ts` — postgres.js + drizzle client, exported as `db`
+- `packages/db/src/index.ts` — barrel export
+- `apps/web/package.json` — Next.js 14, NextAuth, Embla Carousel, Tailwind stubs
+- `apps/agent/package.json` — Anthropic SDK, Telegraf, tsx for dev
+
+### Notes
+- Docker Compose uses `profiles: [prod]` for web/agent so `docker compose up` in dev only starts postgres
+- `packages/db` uses `"type": "module"` with `.js` extensions in imports for ESM compatibility
+- App Dockerfiles not yet written — deferred to when apps are scaffolded
+
+## Entry 002 — (next entry goes here)
 
 ---
 
