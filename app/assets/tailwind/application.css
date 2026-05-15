@@ -1,0 +1,107 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------------------
+   Sultana Dining — desert design system
+   Palette inspired by sun-bleached sand, terracotta, and dusty succulents.
+   --------------------------------------------------------------------------- */
+
+@theme {
+  /* Sand — warm neutrals, page backgrounds & surfaces */
+  --color-sand-50:  #faf6ef;
+  --color-sand-100: #f3ead6;
+  --color-sand-200: #e8d7b3;
+  --color-sand-300: #d9bf89;
+  --color-sand-400: #c4a263;
+  --color-sand-500: #a98344;
+  --color-sand-600: #876732;
+  --color-sand-700: #685028;
+  --color-sand-800: #4a3920;
+  --color-sand-900: #2c2214;
+
+  /* Clay — terracotta accents, primary buttons & highlights */
+  --color-clay-50:  #fbf1ec;
+  --color-clay-100: #f4ddd1;
+  --color-clay-200: #e8b9a3;
+  --color-clay-300: #d99275;
+  --color-clay-400: #c66e4d;
+  --color-clay-500: #ad5436;
+  --color-clay-600: #8c4129;
+  --color-clay-700: #693221;
+  --color-clay-800: #4a2418;
+  --color-clay-900: #2b1610;
+
+  /* Succulent — dusty sage greens, accents & decorative foliage */
+  --color-succulent-50:  #f1f4ee;
+  --color-succulent-100: #dfe7d8;
+  --color-succulent-200: #c1d0b5;
+  --color-succulent-300: #9cb38d;
+  --color-succulent-400: #7a9569;
+  --color-succulent-500: #5e7a50;
+  --color-succulent-600: #48603e;
+  --color-succulent-700: #384a30;
+  --color-succulent-800: #283522;
+  --color-succulent-900: #161e13;
+
+  /* Typography */
+  --font-display: "Fraunces", ui-serif, Georgia, serif;
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+}
+
+/* Base body styling */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    background-color: var(--color-sand-50);
+    color: var(--color-sand-900);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    letter-spacing: -0.01em;
+  }
+}
+
+/* Reusable component classes.
+   Note: Tailwind v4 doesn't allow @apply to compose custom classes, so
+   shared button styles are inlined into each variant. */
+@layer components {
+  .btn,
+  .btn-primary,
+  .btn-secondary,
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-medium tracking-wide transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-sand-50;
+  }
+  .btn-primary {
+    @apply bg-clay-500 text-sand-50 hover:bg-clay-600 focus-visible:ring-clay-400;
+  }
+  .btn-secondary {
+    @apply bg-sand-200 text-sand-900 hover:bg-sand-300 focus-visible:ring-sand-400;
+  }
+  .btn-ghost {
+    @apply text-sand-800 hover:bg-sand-100;
+  }
+
+  .chip,
+  .chip-active {
+    @apply inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-sm transition-colors cursor-pointer;
+  }
+  .chip {
+    @apply border-sand-300 bg-sand-50 text-sand-800 hover:bg-sand-100;
+  }
+  .chip-active {
+    @apply border-clay-500 bg-clay-500 text-sand-50 hover:bg-clay-600;
+  }
+
+  .card {
+    @apply rounded-2xl bg-sand-50 ring-1 ring-sand-200/80 overflow-hidden;
+  }
+  .section {
+    @apply mx-auto w-full max-w-7xl px-5 sm:px-8;
+  }
+  .eyebrow {
+    @apply inline-block text-xs font-medium uppercase tracking-[0.2em] text-clay-600;
+  }
+}

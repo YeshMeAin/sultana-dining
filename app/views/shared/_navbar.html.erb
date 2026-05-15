@@ -1,0 +1,24 @@
+<header class="absolute inset-x-0 top-0 z-30">
+  <div class="section flex items-center justify-between py-6">
+    <%= link_to root_path, class: "flex items-center gap-3 group" do %>
+      <span class="text-succulent-500 group-hover:text-succulent-600 transition-colors">
+        <%= render "shared/succulent", variant: :rosette, class: "h-9 w-9" %>
+      </span>
+      <span class="font-display text-2xl tracking-tight text-sand-900">
+        Sultana <span class="text-clay-600">Dining</span>
+      </span>
+    <% end %>
+
+    <nav class="hidden md:flex items-center gap-1 text-sm">
+      <%= link_to "Home",     root_path,   class: "btn-ghost" %>
+      <%= link_to "Shop",     "#shop",     class: "btn-ghost" %>
+      <%= link_to "Catering", "#catering", class: "btn-ghost" %>
+      <%= link_to "About",    "#about",    class: "btn-ghost" %>
+      <%= link_to "Contact",  "#contact",  class: "btn-ghost" %>
+    </nav>
+
+    <div class="flex items-center gap-3">
+      <a href="#shop" class="btn-primary hidden sm:inline-flex">Order now</a>
+    </div>
+  </div>
+</header>
