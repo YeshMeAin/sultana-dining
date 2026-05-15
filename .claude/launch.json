@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "sultana-dining",
+      "runtimeExecutable": "/tmp/sultana-start.sh",
+      "runtimeArgs": [],
+      "port": 3001
+    }
+  ]
+}
