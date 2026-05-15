@@ -1,8 +1,8 @@
 <footer class="relative mt-24 bg-sand-100 text-sand-800">
-  <div class="absolute -top-10 left-10 text-succulent-400/70">
+  <div class="absolute -top-10 start-10 text-succulent-400/70">
     <%= render "shared/succulent", variant: :sprig, class: "h-20 w-20" %>
   </div>
-  <div class="absolute -top-12 right-12 text-succulent-300/80">
+  <div class="absolute -top-12 end-12 text-succulent-300/80">
     <%= render "shared/succulent", variant: :prickly, class: "h-24 w-24" %>
   </div>
 
@@ -10,21 +10,21 @@
     <div>
       <div class="flex items-center gap-3">
         <span class="text-succulent-500"><%= render "shared/succulent", variant: :rosette, class: "h-8 w-8" %></span>
-        <span class="font-display text-xl text-sand-900">Sultana Dining</span>
+        <span class="font-display text-xl text-sand-900"><%= t("site.name") %></span>
       </div>
       <p class="mt-4 text-sm leading-relaxed max-w-xs">
-        A private chef &amp; catering kitchen — handmade casseroles, baked goods, and seasonal table spreads.
+        <%= t("footer.tagline") %>
       </p>
     </div>
 
     <div>
-      <h4 class="eyebrow">Visit</h4>
-      <p class="mt-3 text-sm">By appointment · Pickup &amp; delivery</p>
-      <p class="mt-1 text-sm">Mon — Sat · 9am to 6pm</p>
+      <h4 class="eyebrow"><%= t("footer.visit") %></h4>
+      <p class="mt-3 text-sm"><%= t("footer.visit_info") %></p>
+      <p class="mt-1 text-sm"><%= t("footer.hours") %></p>
     </div>
 
     <div id="contact">
-      <h4 class="eyebrow">Get in touch</h4>
+      <h4 class="eyebrow"><%= t("footer.get_in_touch") %></h4>
       <p class="mt-3 text-sm">hello@sultanadining.com</p>
       <p class="mt-1 text-sm">+1 (555) 010-2024</p>
     </div>
@@ -32,8 +32,8 @@
 
   <div class="border-t border-sand-200">
     <div class="section py-5 text-xs flex flex-col sm:flex-row gap-2 justify-between text-sand-700">
-      <span>© <%= Date.current.year %> Sultana Dining. Made with care.</span>
-      <span>Handmade in small batches.</span>
+      <span><%= t("footer.copyright", year: Date.current.year) %></span>
+      <span><%= t("footer.handmade") %></span>
     </div>
   </div>
 </footer>

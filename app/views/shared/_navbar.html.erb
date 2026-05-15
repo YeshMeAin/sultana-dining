@@ -10,15 +10,17 @@
     <% end %>
 
     <nav class="hidden md:flex items-center gap-1 text-sm">
-      <%= link_to "Home",     root_path,   class: "btn-ghost" %>
-      <%= link_to "Shop",     "#shop",     class: "btn-ghost" %>
-      <%= link_to "Catering", "#catering", class: "btn-ghost" %>
-      <%= link_to "About",    "#about",    class: "btn-ghost" %>
-      <%= link_to "Contact",  "#contact",  class: "btn-ghost" %>
+      <%= link_to t("nav.home"),     root_path,   class: "btn-ghost" %>
+      <%= link_to t("nav.shop"),     "#shop",     class: "btn-ghost" %>
+      <%= link_to t("nav.catering"), "#catering", class: "btn-ghost" %>
+      <%= link_to t("nav.about"),    "#about",    class: "btn-ghost" %>
+      <%= link_to t("nav.contact"),  "#contact",  class: "btn-ghost" %>
     </nav>
 
     <div class="flex items-center gap-3">
-      <a href="#shop" class="btn-primary hidden sm:inline-flex">Order now</a>
+      <% other_locale = I18n.locale == :en ? :he : :en %>
+      <%= link_to t("nav.language"), root_path(locale: other_locale), class: "btn-ghost text-sm font-medium" %>
+      <a href="#shop" class="btn-primary hidden sm:inline-flex"><%= t("nav.order_now") %></a>
     </div>
   </div>
 </header>

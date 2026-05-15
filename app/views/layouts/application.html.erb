@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html>
+<html lang="<%= I18n.locale %>" dir="<%= I18n.locale == :he ? 'rtl' : 'ltr' %>">
   <head>
-    <title><%= content_for(:title) || "Sultana Dining — Private Chef & Catering" %></title>
+    <title><%= content_for(:title) || t("site.title") %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="application-name" content="Sultana Dining">
+    <meta name="application-name" content="<%= t('site.name') %>">
     <meta name="mobile-web-app-capable" content="yes">
-    <meta name="description" content="<%= content_for(:description) || 'Private chef and catering — handmade casseroles, baked goods, and seasonal spreads.' %>">
+    <meta name="description" content="<%= content_for(:description) || t('site.description') %>">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 

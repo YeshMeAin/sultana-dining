@@ -1,31 +1,76 @@
-# Files in the config/locales directory are used for internationalization and
-# are automatically loaded by Rails. If you want to use locales other than
-# English, add the necessary files in this directory.
-#
-# To use the locales, use `I18n.t`:
-#
-#     I18n.t "hello"
-#
-# In views, this is aliased to just `t`:
-#
-#     <%= t("hello") %>
-#
-# To use a different locale, set it with `I18n.locale`:
-#
-#     I18n.locale = :es
-#
-# This would use the information in config/locales/es.yml.
-#
-# To learn more about the API, please read the Rails Internationalization guide
-# at https://guides.rubyonrails.org/i18n.html.
-#
-# Be aware that YAML interprets the following case-insensitive strings as
-# booleans: `true`, `false`, `on`, `off`, `yes`, `no`. Therefore, these strings
-# must be quoted to be interpreted as strings. For example:
-#
-#     en:
-#       "yes": yup
-#       enabled: "ON"
-
 en:
-  hello: "Hello world"
+  site:
+    name: "Sultana Dining"
+    title: "Sultana Dining — Private Chef & Catering"
+    description: "Private chef and catering — handmade casseroles, baked goods, and seasonal spreads."
+
+  nav:
+    home: "Home"
+    shop: "Shop"
+    catering: "Catering"
+    about: "About"
+    contact: "Contact"
+    order_now: "Order now"
+    language: "עב"
+
+  hero:
+    eyebrow: "Private chef · Catering · Pickup"
+    heading_start: "A kitchen built for"
+    heading_highlight: "slow, generous"
+    heading_end: "meals."
+    description: "Handmade casseroles, fresh-baked breads and pastries, and full catering for dinners that feel like they were always meant to happen at your table."
+    browse_deli: "Browse the deli"
+    plan_catering: "Plan a catering"
+    prev_slide: "Previous slide"
+    next_slide: "Next slide"
+    slide_label: "Slide %{number}"
+
+  slides:
+    sunday:
+      title: "Sunday casseroles"
+      subtitle: "Slow-baked, deeply seasoned, made for sharing."
+    oven:
+      title: "From the oven"
+      subtitle: "Sourdoughs, tarts, and stone-fruit galettes."
+    garden:
+      title: "Garden plates"
+      subtitle: "Seasonal salads with herbs picked the same day."
+    private:
+      title: "Private tables"
+      subtitle: "Catered dinners for ten to forty guests."
+
+  services:
+    eyebrow: "What we do"
+    heading: "A small kitchen, a wide table."
+    description: "From single casseroles dropped off at your door to full-service catering for special evenings — all from one pair of hands."
+    private_chef:
+      title: "Private chef"
+      body: "In-home dinners with menus shaped around the season and your guests."
+    catering:
+      title: "Catering"
+      body: "Drop-off and full-service catering for gatherings of ten to forty."
+    deli:
+      title: "The deli"
+      body: "Ready-to-bake casseroles, breads, and pastries — order by Friday for the weekend."
+
+  story:
+    eyebrow: "The story"
+    heading: "Cooking the way it's meant to be cooked."
+    paragraph_1: "Sultana Dining is a one-kitchen operation rooted in slow techniques: long-rise breads, casseroles that simmer for an afternoon, sauces built from scratch. Everything is made in small batches, the way it would be in a family kitchen — just a little more of it, for the people you want to feed."
+    paragraph_2: "We source from a short list of local growers and bakeries, change the menu with the season, and never serve anything we wouldn't set on our own table."
+
+  cta:
+    eyebrow: "The deli is open"
+    heading: "Order the weekend table."
+    description: "Casseroles, baked goods, salads, and sides — order by Friday, pick up Saturday morning. We'll have it labeled with reheating instructions and a hand-written note."
+    browse_deli: "Browse the deli"
+    ask_question: "Ask a question"
+
+  footer:
+    tagline: "A private chef & catering kitchen — handmade casseroles, baked goods, and seasonal table spreads."
+    visit: "Visit"
+    visit_info: "By appointment · Pickup & delivery"
+    hours: "Mon — Sat · 9am to 6pm"
+    get_in_touch: "Get in touch"
+    copyright: "© %{year} Sultana Dining. Made with care."
+    handmade: "Handmade in small batches."

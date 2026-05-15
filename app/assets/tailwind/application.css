@@ -105,3 +105,8 @@
     @apply inline-block text-xs font-medium uppercase tracking-[0.2em] text-clay-600;
   }
 }
+
+/* RTL support */
+[dir="rtl"] .rtl\:rotate-180 {
+  transform: rotate(180deg);
+}
