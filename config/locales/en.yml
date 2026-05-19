@@ -66,6 +66,15 @@ en:
     browse_deli: "Browse the deli"
     ask_question: "Ask a question"
 
+  shop:
+    title: "The Deli — Sultana Dining"
+    eyebrow: "The deli"
+    heading: "Order for the weekend."
+    description: "Casseroles, baked goods, salads, and sides — all handmade in small batches."
+    all: "All"
+    unavailable: "Sold out"
+    empty: "Nothing here yet — check back soon."
+
   footer:
     tagline: "A private chef & catering kitchen — handmade casseroles, baked goods, and seasonal table spreads."
     visit: "Visit"

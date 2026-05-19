@@ -11,7 +11,7 @@
 
     <nav class="hidden md:flex items-center gap-1 text-sm">
       <%= link_to t("nav.home"),     root_path,   class: "btn-ghost" %>
-      <%= link_to t("nav.shop"),     "#shop",     class: "btn-ghost" %>
+      <%= link_to t("nav.shop"),     shop_path,   class: "btn-ghost" %>
       <%= link_to t("nav.catering"), "#catering", class: "btn-ghost" %>
       <%= link_to t("nav.about"),    "#about",    class: "btn-ghost" %>
       <%= link_to t("nav.contact"),  "#contact",  class: "btn-ghost" %>
@@ -20,7 +20,7 @@
     <div class="flex items-center gap-3">
       <% other_locale = I18n.locale == :en ? :he : :en %>
       <%= link_to t("nav.language"), root_path(locale: other_locale), class: "btn-ghost text-sm font-medium" %>
-      <a href="#shop" class="btn-primary hidden sm:inline-flex"><%= t("nav.order_now") %></a>
+      <%= link_to t("nav.order_now"), shop_path, class: "btn-primary hidden sm:inline-flex" %>
     </div>
   </div>
 </header>
