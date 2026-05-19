@@ -27,5 +27,10 @@
     <p class="mt-4 font-display text-lg text-clay-600">
       &#8362;<%= number_with_precision(item.price, precision: 0) %>
     </p>
+    <% if item.available? %>
+      <%= button_to t("cart.add"), cart_items_path(item_id: item.id),
+          method: :post, class: "btn-primary mt-4 w-full text-sm",
+          form: { data: { turbo_frame: "_top" } } %>
+    <% end %>
   </div>
 </div>

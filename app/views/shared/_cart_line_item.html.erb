@@ -1,0 +1,57 @@
+<div class="flex items-center gap-4 px-6 py-4">
+  <%# Thumbnail %>
+  <div class="h-16 w-16 shrink-0 rounded-lg overflow-hidden bg-gradient-to-br from-sand-200 to-clay-200">
+    <% if line.item.image.attached? %>
+      <%= image_tag line.item.image.variant(resize_to_fill: [128, 128]),
+                    class: "h-full w-full object-cover",
+                    alt: line.item.name %>
+    <% end %>
+  </div>
+
+  <%# Details %>
+  <div class="flex-1 min-w-0">
+    <h3 class="text-sm font-medium text-sand-900 truncate"><%= line.item.name %></h3>
+    <p class="text-sm text-clay-600">
+      &#8362;<%= number_with_precision(line.item.price, precision: 0) %>
+    </p>
+  </div>
+
+  <%# Quantity controls %>
+  <div class="flex items-center gap-1">
+    <%= button_to cart_item_path(line.item),
+        method: :patch,
+        params: { quantity: line.quantity - 1 },
+        class: "h-8 w-8 rounded-full border border-sand-300 grid place-items-center
+                text-sand-700 hover:bg-sand-100 transition-colors",
+        aria: { label: t("cart.decrease") } do %>
+      <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+        <path stroke-linecap="round" d="M5 12h14"/>
+      </svg>
+    <% end %>
+
+    <span class="w-8 text-center text-sm font-medium text-sand-900">
+      <%= line.quantity %>
+    </span>
+
+    <%= button_to cart_item_path(line.item),
+        method: :patch,
+        params: { quantity: line.quantity + 1 },
+        class: "h-8 w-8 rounded-full border border-sand-300 grid place-items-center
+                text-sand-700 hover:bg-sand-100 transition-colors",
+        aria: { label: t("cart.increase") } do %>
+      <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+        <path stroke-linecap="round" d="M12 5v14m-7-7h14"/>
+      </svg>
+    <% end %>
+  </div>
+
+  <%# Remove %>
+  <%= button_to cart_item_path(line.item),
+      method: :delete,
+      class: "btn-ghost p-1 text-sand-400 hover:text-clay-500",
+      aria: { label: t("cart.remove") } do %>
+    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+    </svg>
+  <% end %>
+</div>

@@ -1,0 +1,6 @@
+<%= turbo_stream.replace "cart_badge" do %>
+  <%= render "shared/cart_badge", count: current_cart.total_count %>
+<% end %>
+<%= turbo_stream.replace "cart_drawer_content" do %>
+  <%= render "shared/cart_drawer_content", cart: current_cart %>
+<% end %>

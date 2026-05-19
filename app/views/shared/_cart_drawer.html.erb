@@ -1,0 +1,37 @@
+<div data-controller="drawer"
+     data-action="cart:open@window->drawer#open"
+     class="fixed inset-0 z-40 pointer-events-none"
+     aria-hidden="true">
+
+  <%# Backdrop %>
+  <div data-drawer-target="backdrop"
+       data-action="click->drawer#close"
+       class="absolute inset-0 bg-sand-900/40 opacity-0 transition-opacity duration-300
+              pointer-events-none"></div>
+
+  <%# Panel %>
+  <div data-drawer-target="panel"
+       class="absolute inset-y-0 end-0 w-full max-w-md bg-sand-50 shadow-2xl
+              transition-transform duration-300 ease-out pointer-events-auto
+              flex flex-col"
+       style="transform: translateX(<%= I18n.locale == :he ? '-100%' : '100%' %>)">
+
+    <%# Header %>
+    <div class="flex items-center justify-between border-b border-sand-200 px-6 py-4">
+      <h2 class="font-display text-xl text-sand-900"><%= t("cart.title") %></h2>
+      <button data-action="click->drawer#close"
+              class="btn-ghost p-2"
+              aria-label="<%= t('cart.close') %>">
+        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+             stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+
+    <%# Content (replaced via Turbo Stream) %>
+    <div id="cart_drawer_content" class="flex-1 overflow-y-auto flex flex-col">
+      <%= render "shared/cart_drawer_content", cart: current_cart %>
+    </div>
+  </div>
+</div>

@@ -75,6 +75,19 @@ en:
     unavailable: "Sold out"
     empty: "Nothing here yet — check back soon."
 
+  cart:
+    title: "Your cart"
+    open: "Open cart"
+    close: "Close cart"
+    add: "Add to cart"
+    empty: "Your cart is empty"
+    browse: "Browse the deli"
+    subtotal: "Subtotal"
+    checkout: "Continue"
+    increase: "Increase quantity"
+    decrease: "Decrease quantity"
+    remove: "Remove item"
+
   footer:
     tagline: "A private chef & catering kitchen — handmade casseroles, baked goods, and seasonal table spreads."
     visit: "Visit"

@@ -8,7 +8,17 @@ class ApplicationController < ActionController::Base
     { locale: I18n.locale == I18n.default_locale ? nil : I18n.locale }
   end
 
+  helper_method :current_cart
+
   private
+
+  def current_cart
+    @current_cart ||= Cart.new(session[:cart])
+  end
+
+  def save_cart
+    session[:cart] = current_cart.to_h
+  end
 
   def switch_locale(&action)
     locale = params[:locale] || I18n.default_locale
