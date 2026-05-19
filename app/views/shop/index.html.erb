@@ -1,0 +1,51 @@
+<% content_for :title, t("shop.title") %>
+
+<%# ------------------------------------------------------------ SHOP HEADER -%>
+<section class="relative overflow-hidden bg-sand-100">
+  <div class="pointer-events-none absolute -top-8 -start-10 text-succulent-300/50">
+    <%= render "shared/succulent", variant: :rosette, class: "h-40 w-40" %>
+  </div>
+  <div class="pointer-events-none absolute top-12 end-6 text-succulent-400/40 hidden sm:block">
+    <%= render "shared/succulent", variant: :sprig, class: "h-28 w-28" %>
+  </div>
+
+  <div class="section pt-36 pb-16 md:pt-44 md:pb-20 relative text-center">
+    <span class="eyebrow"><%= t("shop.eyebrow") %></span>
+    <h1 class="mt-3 text-3xl sm:text-4xl md:text-5xl text-sand-900 leading-tight">
+      <%= t("shop.heading") %>
+    </h1>
+    <p class="mt-4 max-w-lg mx-auto text-lg text-sand-700 leading-relaxed">
+      <%= t("shop.description") %>
+    </p>
+  </div>
+</section>
+
+<%# ------------------------------------------------- FILTER CHIPS + GRID -%>
+<section class="section py-12 md:py-16">
+  <%= turbo_frame_tag "items" do %>
+    <%# Category filter chips %>
+    <div class="flex flex-wrap justify-center gap-2">
+      <%= link_to t("shop.all"),
+          shop_path,
+          class: @current_category.nil? ? "chip chip-active" : "chip",
+          data: { turbo_frame: "items", turbo_action: "advance" } %>
+      <% @categories.each do |cat| %>
+        <%= link_to cat.name,
+            shop_path(category: cat.id),
+            class: @current_category == cat ? "chip chip-active" : "chip",
+            data: { turbo_frame: "items", turbo_action: "advance" } %>
+      <% end %>
+    </div>
+
+    <%# Items grid %>
+    <% if @items.any? %>
+      <div class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <% @items.each do |item| %>
+          <%= render "shop/item_card", item: item %>
+        <% end %>
+      </div>
+    <% else %>
+      <p class="mt-10 text-center text-sand-600"><%= t("shop.empty") %></p>
+    <% end %>
+  <% end %>
+</section>

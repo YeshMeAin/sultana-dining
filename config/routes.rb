@@ -3,7 +3,9 @@ Rails.application.routes.draw do
 
   scope "/:locale", locale: /en|he/ do
     get "/", to: "pages#home", as: :localized_root
+    get "/shop", to: "shop#index", as: :localized_shop
   end
 
+  get "/shop", to: "shop#index", as: :shop
   root "pages#home"
 end

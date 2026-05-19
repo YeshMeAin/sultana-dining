@@ -33,7 +33,7 @@
           <%= t("hero.description") %>
         </p>
         <div class="mt-8 flex flex-wrap gap-3">
-          <a href="#shop" class="btn-primary"><%= t("hero.browse_deli") %></a>
+          <%= link_to t("hero.browse_deli"), shop_path, class: "btn-primary" %>
           <a href="#catering" class="btn-secondary"><%= t("hero.plan_catering") %></a>
         </div>
       </div>
@@ -157,7 +157,7 @@
       <h2 class="mt-3 text-3xl md:text-4xl"><%= t("cta.heading") %></h2>
       <p class="mt-4 text-sand-100/90 leading-relaxed"><%= t("cta.description") %></p>
       <div class="mt-8 flex flex-wrap gap-3">
-        <a href="#" class="btn bg-sand-50 text-clay-700 hover:bg-sand-100"><%= t("cta.browse_deli") %></a>
+        <%= link_to t("cta.browse_deli"), shop_path, class: "btn bg-sand-50 text-clay-700 hover:bg-sand-100" %>
         <a href="#contact" class="btn bg-transparent ring-1 ring-sand-50/40 text-sand-50 hover:bg-sand-50/10"><%= t("cta.ask_question") %></a>
       </div>
     </div>
