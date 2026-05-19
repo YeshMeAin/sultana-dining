@@ -68,6 +68,11 @@
    Note: Tailwind v4 doesn't allow @apply to compose custom classes, so
    shared button styles are inlined into each variant. */
 @layer components {
+  /* Flip arrow icons in RTL so they point outward */
+  [dir=rtl] .rtl-flip {
+    transform: scaleX(-1);
+  }
+
   .btn,
   .btn-primary,
   .btn-secondary,
