@@ -20,7 +20,6 @@
     <div class="flex items-center gap-3">
       <% other_locale = I18n.locale == :en ? :he : :en %>
       <%= link_to t("nav.language"), root_path(locale: other_locale), class: "btn-ghost text-sm font-medium" %>
-      <%= render "shared/cart_badge", count: current_cart.total_count %>
       <%= link_to t("nav.order_now"), shop_path, class: "btn-primary hidden sm:inline-flex" %>
     </div>
   </div>

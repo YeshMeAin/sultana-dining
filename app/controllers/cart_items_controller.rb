@@ -1,5 +1,6 @@
 class CartItemsController < ApplicationController
   def create
+    @item = Item.find_by(id: params[:item_id])
     current_cart.add(params[:item_id])
     save_cart
 
@@ -10,6 +11,7 @@ class CartItemsController < ApplicationController
   end
 
   def update
+    @item = Item.find_by(id: params[:id])
     current_cart.set(params[:id], params[:quantity].to_i)
     save_cart
 
@@ -20,6 +22,7 @@ class CartItemsController < ApplicationController
   end
 
   def destroy
+    @item = Item.find_by(id: params[:id])
     current_cart.remove(params[:id])
     save_cart
 
