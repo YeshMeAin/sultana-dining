@@ -1,4 +1,6 @@
-<div class="card flex flex-col">
+<% cart ||= current_cart %>
+<% qty_in_cart = cart.items[item.id.to_s] || 0 %>
+<div id="item_card_<%= item.id %>" class="card flex flex-col">
   <%# Image or placeholder %>
   <div class="aspect-[4/3] relative overflow-hidden">
     <% if item.image.attached? %>
@@ -17,6 +19,13 @@
         <%= t("shop.unavailable") %>
       </span>
     <% end %>
+
+    <% if qty_in_cart > 0 %>
+      <span class="absolute top-3 start-3 flex h-7 w-7 items-center justify-center
+                    rounded-full bg-clay-500 text-xs font-bold text-sand-50 shadow-md">
+        <%= qty_in_cart %>
+      </span>
+    <% end %>
   </div>
 
   <%# Card body %>
@@ -28,9 +37,37 @@
       &#8362;<%= number_with_precision(item.price, precision: 0) %>
     </p>
     <% if item.available? %>
-      <%= button_to t("cart.add"), cart_items_path(item_id: item.id),
-          method: :post, class: "btn-primary mt-4 w-full text-sm",
-          form: { data: { turbo_frame: "_top" } } %>
+      <% if qty_in_cart > 0 %>
+        <div class="mt-4 flex items-center justify-between gap-2">
+          <%= button_to cart_item_path(item),
+              method: :patch,
+              params: { quantity: qty_in_cart - 1 },
+              form: { data: { turbo_frame: "_top" } },
+              class: "h-9 w-9 rounded-full border border-sand-300 grid place-items-center
+                      text-sand-700 hover:bg-sand-100 transition-colors" do %>
+            <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+              <path stroke-linecap="round" d="M5 12h14"/>
+            </svg>
+          <% end %>
+
+          <span class="font-display text-lg text-sand-900"><%= qty_in_cart %></span>
+
+          <%= button_to cart_item_path(item),
+              method: :patch,
+              params: { quantity: qty_in_cart + 1 },
+              form: { data: { turbo_frame: "_top" } },
+              class: "h-9 w-9 rounded-full border border-sand-300 grid place-items-center
+                      text-sand-700 hover:bg-sand-100 transition-colors" do %>
+            <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+              <path stroke-linecap="round" d="M12 5v14m-7-7h14"/>
+            </svg>
+          <% end %>
+        </div>
+      <% else %>
+        <%= button_to t("cart.add"), cart_items_path(item_id: item.id),
+            method: :post, class: "btn-primary mt-4 w-full text-sm",
+            form: { data: { turbo_frame: "_top" } } %>
+      <% end %>
     <% end %>
   </div>
 </div>
